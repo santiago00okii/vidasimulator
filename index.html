@@ -3,388 +3,478 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Tienda Ficticia Millonaria</title>
+<title>Tienda Ficticia con Mini Juegos y Edad</title>
 <style>
-  body {
-    font-family: Arial, sans-serif;
-    background: #f0f0f0;
-    margin: 0; padding: 0;
-  }
-  header {
-    background: #d70000;
+  body { font-family: Arial, sans-serif; margin: 0; background: #f5f5f5; }
+  header { background: #004080; color: white; padding: 10px 20px; display: flex; justify-content: space-between; align-items: center; }
+  #menuBtn { font-size: 24px; cursor: pointer; user-select: none; }
+  #menu { display: none; position: absolute; top: 50px; right: 20px; background: white; border: 1px solid #ccc; padding: 10px; border-radius: 5px; }
+  #menu input[type=text] { padding: 5px; width: 150px; margin-bottom: 5px; }
+  #menu button { padding: 5px 10px; cursor: pointer; }
+  #creditCard {
+    background: linear-gradient(135deg, #2d6cdf, #154f9d);
     color: white;
-    text-align: center;
-    padding: 20px;
-    position: relative;
-  }
-  .menu {
-    position: absolute;
-    left: 10px; top: 10px;
-    font-size: 30px;
-    cursor: pointer;
-    user-select: none;
-  }
-  #menuOpciones {
-    display: none;
-    position: absolute;
-    background: white;
-    border: 1px solid #ccc;
-    padding: 10px;
-    z-index: 10;
-    left: 10px;
-    top: 50px;
-  }
-  #presupuesto, #edad {
-    background: #fff8e1;
-    color: #333;
-    font-size: 18px;
-    padding: 10px;
-    text-align: center;
-  }
-  .tarjeta {
-    background: #1e88e5;
-    color: white;
-    padding: 15px;
-    margin: 10px;
-    border-radius: 10px;
-    text-align: center;
+    padding: 15px 20px;
+    border-radius: 15px;
+    width: 320px;
+    margin: 20px auto;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    font-weight: bold;
     font-size: 18px;
   }
-  .tienda {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    gap: 20px;
-    padding: 20px;
+  #ageCounter {
+    text-align: center;
+    font-size: 22px;
+    margin: 10px 0 30px 0;
   }
-  .producto {
-    background: white;
-    border: 1px solid #ddd;
+  #message {
+    text-align: center;
+    color: red;
+    font-weight: bold;
+    margin-bottom: 10px;
+  }
+  #budget {
+    font-size: 20px;
+    text-align: center;
+    margin-bottom: 15px;
+  }
+  #alcancia {
+    margin: 15px auto;
+    width: 300px;
+    background: #ffe680;
+    padding: 10px;
     border-radius: 8px;
-    padding: 10px;
     text-align: center;
-    box-shadow: 0 0 5px rgba(0,0,0,0.1);
-  }
-  .producto img {
-    width: 100px;
-    height: 100px;
-    object-fit: contain;
-  }
-  .producto h4 {
-    margin: 10px 0 5px;
-  }
-  .producto p {
-    margin: 5px 0;
     font-weight: bold;
   }
-  .producto button {
-    background: #4caf50;
-    color: white;
-    border: none;
-    padding: 8px 12px;
-    border-radius: 4px;
-    cursor: pointer;
+  #products {
+    max-width: 960px;
+    margin: 0 auto 30px auto;
+    display: grid;
+    grid-template-columns: repeat(auto-fit,minmax(140px,1fr));
+    gap: 15px;
   }
-  .juegos {
-    padding: 20px;
+  .product {
+    background: white;
+    border-radius: 8px;
+    padding: 10px;
+    box-shadow: 0 1px 5px rgb(0 0 0 / 0.1);
     text-align: center;
   }
-  canvas {
-    background: #fff;
-    display: block;
+  .product img {
+    width: 100%;
+    height: 100px;
+    object-fit: contain;
+    margin-bottom: 8px;
+  }
+  .product button {
+    background: #007bff;
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+  }
+  .product button:disabled {
+    background: #aaa;
+    cursor: not-allowed;
+  }
+  #rentaSection {
+    max-width: 320px;
+    margin: 0 auto 30px auto;
+    background: #d6f0ff;
+    padding: 15px;
+    border-radius: 8px;
+    text-align: center;
+    font-weight: bold;
+  }
+  #rentInput {
+    width: 80px;
+    padding: 5px;
+    margin-right: 10px;
+  }
+  #miniGames {
+    max-width: 400px;
+    margin: 0 auto 30px auto;
+    text-align: center;
+  }
+  #dinoCanvas {
+    background: #f2f2f2;
+    border: 2px solid #333;
     margin: 10px auto;
-    border: 1px solid #ccc;
+    display: block;
+    border-radius: 10px;
+  }
+  #startEasy, #startHard {
+    background: #28a745;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    margin: 5px;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
   }
 </style>
 </head>
 <body>
+
 <header>
-  <div class="menu" onclick="mostrarMenu()">☰</div>
-  <h1>Tienda Ficticia Millonaria</h1>
-  <div id="menuOpciones">
-    <label for="codigo">Código secreto:</label>
-    <input type="text" id="codigo" />
-    <button onclick="validarCodigo()">Canjear</button>
-  </div>
+  <div>🛒 Tienda Ficticia - Presupuesto</div>
+  <div id="menuBtn">&#9776;</div>
 </header>
-<div class="tarjeta">Dinero actual: $<span id="dinero">1000000</span></div>
-<div id="edad">Edad: <span id="anios">6</span> años</div>
-<section class="tienda" id="productos"></section>
-<div class="juegos">
-  <button id="btnFacil">Mini Juego Fácil (+$1000)</button>
-  <button id="btnDificil">Mini Juego Difícil (+$20000)</button>
-  <p id="mensajeJuego" style="font-weight:bold;"></p>
-  <canvas id="juego" width="400" height="150"></canvas>
+<div id="menu">
+  <input type="text" id="codeInput" placeholder="Ingrese código oculto" />
+  <button id="applyCode">Aplicar Código</button>
+</div>
+
+<div id="creditCard">
+  Dinero disponible: $<span id="money">1000000</span>
+</div>
+
+<div id="ageCounter">
+  Edad actual: <span id="age">6</span> años
+</div>
+
+<div id="message"></div>
+
+<div id="budget">
+  Presupuesto: $<span id="budgetAmount">1000000</span>
+</div>
+
+<div id="alcancia">
+  Alcancía: $<span id="alcanciaAmount">0</span> / $2,000,000 <br>
+  Costo para comprar: $2,000 <button id="buyAlcanciaBtn">Comprar Alcancía</button>
+</div>
+
+<div id="rentaSection">
+  <h3>Alquiler de Casa</h3>
+  Precio de alquiler ($ máximo 60): <input type="number" id="rentInput" min="1" max="60" />
+  <button id="payRentBtn">Pagar Alquiler</button>
+  <div id="rentStatus" style="margin-top:10px;color:green;font-weight:bold;"></div>
+</div>
+
+<div id="products">
+  <!-- Productos cargados con JS -->
+</div>
+
+<div id="miniGames">
+  <h3>Mini Juegos del Dinosaurio</h3>
+  <button id="startEasy">Juego Fácil - Premio $1,000</button>
+  <button id="startHard">Juego Difícil - Premio $20,000</button>
+  <canvas id="dinoCanvas" width="400" height="150" style="display:none;"></canvas>
+  <div id="gameMessage" style="font-weight:bold;margin-top:10px;"></div>
 </div>
 
 <script>
-  // Variables principales
-  let dinero = 1000000;
-  let edad = 6;
-  let ahorroAlcancia = 0;
-  const dineroElemento = document.getElementById("dinero");
-  const edadElemento = document.getElementById("anios");
-  const contenedor = document.getElementById("productos");
-  const mensajeJuego = document.getElementById("mensajeJuego");
-  const menuOpciones = document.getElementById("menuOpciones");
-  let juegoActivo = false;
-  let dificultadJuego = false;
-  let alquilerActivo = false;
-  const tiempoAlquilerMs = 60000; // 1 minuto alquiler
-  let edadInterval = null;
+// Datos iniciales
+const initialMoney = 1000000;
+let money = initialMoney;
+let alcanciaBought = false;
+let alcanciaAmount = 0;
+let age = 6;
+let rentPaid = false;
+let rentTimer = null;
 
-  // Productos
-  const productos = [];
-  // Teléfonos
-  for(let i=0; i<30; i++) {
-    productos.push({nombre:"iPhone 14", precio:999, imagen:"https://i.imgur.com/xZgV9sH.png"});
-  }
-  // Consolas
-  for(let i=30; i<60; i++) {
-    productos.push({nombre:"PS5", precio:499, imagen:"https://i.imgur.com/63i6v81.png"});
-  }
-  // Juegos
-  for(let i=60; i<90; i++) {
-    productos.push({nombre:"FIFA 25", precio:69, imagen:"https://i.imgur.com/xl3sfZs.png"});
-  }
-  // Casas
-  for(let i=90; i<120; i++) {
-    productos.push({nombre:"Casa Moderna", precio:800000, imagen:"https://i.imgur.com/RUd1YQ3.png"});
-  }
-  // Alquileres (máximo $60)
-  for(let i=120; i<140; i++) {
-    productos.push({nombre:"Alquiler Cuarto (1 mes)", precio:55, imagen:"https://i.imgur.com/zVdZIrT.png"});
-  }
-  // Carros
-  for(let i=140; i<150; i++) {
-    productos.push({nombre:"Carro Deportivo", precio:35000, imagen:"https://i.imgur.com/5lWxoFb.png"});
-  }
-  // Bicicletas
-  for(let i=150; i<160; i++) {
-    productos.push({nombre:"Bicicleta Montaña", precio:1500, imagen:"https://i.imgur.com/KsGlnvw.png"});
-  }
-  // Alcancía (solo 1)
-  productos.push({nombre:"Alcancía", precio:2000, imagen:"https://i.imgur.com/fYnUkec.png"});
+const products = [];
+// Crear 160 productos variados: teléfonos, consolas, juegos, casas, alquileres, carros, bicicletas
+const productTypes = [
+  {type:'Teléfono', basePrice: 500, images: ['https://via.placeholder.com/120x80?text=Tel+1', 'https://via.placeholder.com/120x80?text=Tel+2', 'https://via.placeholder.com/120x80?text=Tel+3']},
+  {type:'Consola', basePrice: 300, images: ['https://via.placeholder.com/120x80?text=Consola+1', 'https://via.placeholder.com/120x80?text=Consola+2']},
+  {type:'Juego', basePrice: 60, images: ['https://via.placeholder.com/120x80?text=Juego+1', 'https://via.placeholder.com/120x80?text=Juego+2', 'https://via.placeholder.com/120x80?text=Juego+3']},
+  {type:'Casa', basePrice: 50000, images: ['https://via.placeholder.com/120x80?text=Casa+1', 'https://via.placeholder.com/120x80?text=Casa+2']},
+  {type:'Carro', basePrice: 20000, images: ['https://via.placeholder.com/120x80?text=Carro+1', 'https://via.placeholder.com/120x80?text=Carro+2']},
+  {type:'Bicicleta', basePrice: 700, images: ['https://via.placeholder.com/120x80?text=Bici+1', 'https://via.placeholder.com/120x80?text=Bici+2']}
+];
 
-  // Mostrar productos en la tienda
-  function mostrarProductos() {
-    contenedor.innerHTML = "";
-    productos.forEach((p, index) => {
-      const productoHTML = `
-        <div class="producto">
-          <img src="${p.imagen}" alt="${p.nombre}" />
-          <h4>${p.nombre}</h4>
-          <p>$${p.precio.toLocaleString()} ${p.nombre.includes("Alquiler") ? '(Alquiler máximo $60)' : ''}</p>
-          <button onclick="comprar(${index})">Comprar</button>
-        </div>`;
-      contenedor.innerHTML += productoHTML;
-    });
+// Rellenar productos hasta 160
+while(products.length < 160) {
+  const pt = productTypes[Math.floor(Math.random()*productTypes.length)];
+  const priceVariation = Math.random()*pt.basePrice*0.5; // +/-50%
+  const price = Math.round(pt.basePrice + (Math.random()<0.5 ? -priceVariation : priceVariation));
+  const img = pt.images[Math.floor(Math.random()*pt.images.length)];
+  products.push({
+    name: ${pt.type} Modelo ${products.length+1},
+    price: price > 0 ? price : pt.basePrice,
+    image: img,
+    type: pt.type
+  });
+}
+
+// Mostrar productos
+const productsDiv = document.getElementById('products');
+function renderProducts() {
+  productsDiv.innerHTML = '';
+  for(let i=0; i<products.length; i++) {
+    const p = products[i];
+    const disabled = p.price > money;
+    const div = document.createElement('div');
+    div.className = 'product';
+    div.innerHTML = `
+      <img src="${p.image}" alt="${p.name}">
+      <div>${p.name}</div>
+      <div>$${p.price.toLocaleString()}</div>
+      <button ${disabled ? 'disabled' : ''} data-index="${i}">Comprar</button>
+    `;
+    productsDiv.appendChild(div);
+  }
+}
+renderProducts();
+
+// Actualizar dinero y UI
+function updateMoney(amountChange) {
+  money += amountChange;
+  if (money < 0) money = 0;
+  document.getElementById('money').textContent = money.toLocaleString();
+  document.getElementById('budgetAmount').textContent = money.toLocaleString();
+  renderProducts();
+  checkAgeMoneyRules();
+}
+
+// Comprar producto
+productsDiv.addEventListener('click', e => {
+  if(e.target.tagName === 'BUTTON') {
+    const index = +e.target.getAttribute('data-index');
+    const product = products[index];
+    if(product.price <= money) {
+      updateMoney(-product.price);
+      alert(Compraste: ${product.name} por $${product.price.toLocaleString()});
+    } else {
+      alert('No tienes suficiente dinero para comprar esto.');
+    }
+  }
+});
+
+// Comprar alcancía
+document.getElementById('buyAlcanciaBtn').addEventListener('click', () => {
+  if(alcanciaBought) {
+    alert('Ya compraste la alcancía.');
+    return;
+  }
+  if(money >= 2000) {
+    updateMoney(-2000);
+    alcanciaBought = true;
+    alert('Alcancía comprada. Ahora podrás ahorrar.');
+  } else {
+    alert('No tienes suficiente dinero para comprar la alcancía.');
+  }
+});
+
+// Guardar dinero en alcancía
+function saveToAlcancia(amount) {
+  if(!alcanciaBought) return;
+  alcanciaAmount += amount;
+  if(alcanciaAmount >= 2000000) {
+    updateMoney(alcanciaAmount);
+    alert(Alcancía liberó $${alcanciaAmount.toLocaleString()});
+    alcanciaAmount = 0;
+  }
+  document.getElementById('alcanciaAmount').textContent = alcanciaAmount.toLocaleString();
+}
+
+// Alquiler
+const rentInput = document.getElementById('rentInput');
+const payRentBtn = document.getElementById('payRentBtn');
+const rentStatus = document.getElementById('rentStatus');
+
+payRentBtn.addEventListener('click', () => {
+  if(rentPaid) {
+    alert('Ya estás alquilando una casa, espera que termine el tiempo.');
+    return;
+  }
+  const rentPrice = parseInt(rentInput.value);
+  if(isNaN(rentPrice) || rentPrice < 1 || rentPrice > 60) {
+    alert('Ingresa un valor válido entre 1 y 60.');
+    return;
+  }
+  if(rentPrice > money) {
+    alert('No tienes suficiente dinero para pagar el alquiler.');
+    return;
+  }
+  updateMoney(-rentPrice);
+  rentPaid = true;
+  rentStatus.textContent = Alquiler pagado por $${rentPrice}. Durará 1 minuto.;
+  setTimeout(() => {
+    rentPaid = false;
+    rentStatus.textContent = 'El alquiler terminó. Puedes pagar otro.';
+  }, 60000); // 1 minuto
+});
+
+// Menú código oculto
+const menuBtn = document.getElementById('menuBtn');
+const menu = document.getElementById('menu');
+const codeInput = document.getElementById('codeInput');
+const applyCodeBtn = document.getElementById('applyCode');
+
+menuBtn.addEventListener('click', () => {
+  menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
+});
+
+applyCodeBtn.addEventListener('click', () => {
+  const code = codeInput.value.trim();
+  if(code === 'Fc25') {
+    updateMoney(5000000);
+    alert('Código válido. Has recibido $5,000,000.');
+    codeInput.value = '';
+    menu.style.display = 'none';
+  } else {
+    alert('Código inválido.');
+  }
+});
+
+// Edad y reglas de dinero
+const ageSpan = document.getElementById('age');
+const messageDiv = document.getElementById('message');
+
+function checkAgeMoneyRules() {
+  // Mostrar dinero en tarjeta
+  document.getElementById('money').textContent = money.toLocaleString();
+
+  if(age >= 90) {
+    alert('Has llegado a los 90 años. Fin del juego.');
+    resetGame();
+  } else if(age >= 25 && money > 0) {
+    // Dar regalo solo una vez al pasar 25
+    if(!window.giftGiven) {
+      alert('¡Felicitaciones por pasar los 25 años! Recibes $20,000,000 de regalo.');
+      updateMoney(20000000);
+      window.giftGiven = true;
+    }
+  } else if(age >= 20) {
+    if(money < 5000000) {
+      messageDiv.textContent = 'Debes tener al menos $5,000,000 a los 20 años para seguir jugando. Intenta de nuevo.';
+      setTimeout(resetGame, 5000);
+    } else {
+      messageDiv.textContent = '';
+    }
+  } else {
+    messageDiv.textContent = '';
+  }
+}
+
+function resetGame() {
+  money = initialMoney;
+  alcanciaAmount = 0;
+  alcanciaBought = false;
+  age = 6;
+  rentPaid = false;
+  window.giftGiven = false;
+  codeInput.value = '';
+  document.getElementById('alcanciaAmount').textContent = '0';
+  document.getElementById('rentStatus').textContent = '';
+  messageDiv.textContent = '';
+  ageSpan.textContent = age;
+  updateMoney(0);
+  alert('Juego reiniciado.');
+}
+
+// Avanzar edad cada 2 minutos reales (120,000 ms)
+setInterval(() => {
+  age++;
+  ageSpan.textContent = age;
+  checkAgeMoneyRules();
+}, 120000);
+
+// Mini juegos dinosaurio
+const dinoCanvas = document.getElementById('dinoCanvas');
+const ctx = dinoCanvas.getContext('2d');
+const startEasyBtn = document.getElementById('startEasy');
+const startHardBtn = document.getElementById('startHard');
+const gameMessage = document.getElementById('gameMessage');
+
+let gameRunning = false;
+let gameSpeed = 6;
+let obstacles = [];
+let dino = {x:50, y:120, width:30, height:30, vy:0, gravity:1.2, jumpPower:18, onGround:true};
+let score = 0;
+let animationFrameId;
+
+function resetGameState() {
+  dino.y = 120;
+  dino.vy = 0;
+  dino.onGround = true;
+  obstacles = [];
+  score = 0;
+  gameSpeed = 6;
+  gameMessage.textContent = '';
+  ctx.clearRect(0, 0, dinoCanvas.width, dinoCanvas.height);
+}
+
+function createObstacle() {
+  const height = 30 + Math.random()*20;
+  obstacles.push({x: dinoCanvas.width, y: 150 - height, width: 15, height: height});
+}
+
+function drawDino() {
+  ctx.fillStyle = 'green';
+  ctx.fillRect(dino.x, dino.y, dino.width, dino.height);
+}
+
+function drawObstacles() {
+  ctx.fillStyle = 'brown';
+  obstacles.forEach(ob => {
+    ctx.fillRect(ob.x, ob.y, ob.width, ob.height);
+  });
+}
+
+function updateGame() {
+  ctx.clearRect(0,0,dinoCanvas.width,dinoCanvas.height);
+
+  // Dino physics
+  dino.vy += dino.gravity;
+  dino.y += dino.vy;
+  if(dino.y > 120) {
+    dino.y = 120;
+    dino.vy = 0;
+    dino.onGround = true;
   }
 
-  // Actualizar dinero en pantalla
-  function actualizarDinero() {
-    dineroElemento.textContent = dinero.toLocaleString();
-  }
+  drawDino();
 
-  // Comprar producto
-  function comprar(index) {
-    if(juegoActivo){
-      alert("No puedes comprar mientras juegas.");
+  // Move obstacles
+  for(let i=0; i<obstacles.length; i++) {
+    obstacles[i].x -= gameSpeed;
+  }
+  // Remove offscreen obstacles
+  obstacles = obstacles.filter(ob => ob.x + ob.width > 0);
+  drawObstacles();
+
+  // Spawn obstacles randomly
+  if(Math.random() < 0.015) createObstacle();
+
+  // Collision detection
+  for(let ob of obstacles) {
+    if(dino.x < ob.x + ob.width &&
+       dino.x + dino.width > ob.x &&
+       dino.y < ob.y + ob.height &&
+       dino.y + dino.height > ob.y) {
+      endGame(false);
       return;
     }
-    const prod = productos[index];
-
-    if(prod.nombre.includes("Alquiler")){
-      if(alquilerActivo){
-        alert("Ya tienes un alquiler activo, espera a que termine.");
-        return;
-      }
-      if(prod.precio > 60){
-        alert("El alquiler no puede costar más de $60.");
-        return;
-      }
-    }
-
-    if (dinero >= prod.precio) {
-      dinero -= prod.precio;
-      actualizarDinero();
-
-      if(prod.nombre.includes("Alquiler")){
-        alquilerActivo = true;
-        alert(Alquilaste: ${prod.nombre} por $${prod.precio}. Durará 1 minuto.);
-        setTimeout(() => {
-          alquilerActivo = false;
-          alert(Tu alquiler de ${prod.nombre} terminó.);
-        }, tiempoAlquilerMs);
-        return;
-      }
-
-      if (prod.nombre === "Alcancía") {
-        ahorroAlcancia += prod.precio;
-        if (ahorroAlcancia >= 2000000) {
-          dinero += ahorroAlcancia;
-          alert("¡Alcancía completa! Se te devuelve: $" + ahorroAlcancia.toLocaleString());
-          ahorroAlcancia = 0;
-          actualizarDinero();
-        }
-      }
-      alert(Compraste ${prod.nombre} por $${prod.precio.toLocaleString()});
-    } else {
-      alert("No tienes suficiente dinero.");
-    }
   }
 
-  // Mostrar menú código oculto
-  function mostrarMenu() {
-    menuOpciones.style.display = menuOpciones.style.display === "block" ? "none" : "block";
+  score++;
+  if(score > 1000) {
+    endGame(true);
+    return;
   }
 
-  // Validar código oculto
-  function validarCodigo() {
-    const input = document.getElementById("codigo").value.trim();
-    if(input.toLowerCase() === "fc25") {
-      dinero += 5000000;
-      actualizarDinero();
-      alert("Código aceptado. Se te han añadido $5,000,000");
-      document.getElementById("codigo").value = "";
-      menuOpciones.style.display = "none";
-    } else {
-      alert("Código incorrecto.");
-    }
+  animationFrameId = requestAnimationFrame(updateGame);
+}
+
+function endGame(won) {
+  gameRunning = false;
+  dinoCanvas.style.display = 'none';
+  if(won) {
+    gameMessage.textContent = '¡Ganaste el juego!';
+  } else {
+    gameMessage.textContent = 'Perdiste, intenta de nuevo.';
   }
+  cancelAnimationFrame(animationFrameId);
 
-  // Contador de edad - cada 2 minutos = 1 año
-  function iniciarEdad() {
-    edadInterval = setInterval(() => {
-      edad++;
-      edadElemento.textContent = edad;
-      // Condiciones de juego según edad
-      if (edad === 20) {
-        if (dinero < 5000000) {
-          alert("No tienes $5 millones a los 20 años. Intenta de nuevo.");
-          reiniciarJuego();
-        }
-      }
-      if (edad === 25) {
-        dinero += 20000000;
-        actualizarDinero();
-        alert("¡Felicidades! Has pasado de 25 años, recibes $20 millones de regalo.");
-      }
-      if (edad > 90) {
-        alert("Has llegado a los 90 años. Tu personaje ha fallecido.");
-        reiniciarJuego();
-      }
-    }, 120000); // 2 minutos por año
-  }
-
-  // Reiniciar juego
-  function reiniciarJuego() {
-    dinero = 1000000;
-    edad = 6;
-    ahorroAlcancia = 0;
-    alquilerActivo = false;
-    actualizarDinero();
-    edadElemento.textContent = edad;
-  }
-
-  // Mini juego dinosaurio (simplificado)
-  const canvas = document.getElementById("juego");
-  const ctx = canvas.getContext("2d");
-  const btnFacil = document.getElementById("btnFacil");
-  const btnDificil = document.getElementById("btnDificil");
-
-  let juegoInterval, obstaculoX, dinoY, saltando, gravedad, velocidadObstaculo, puntos;
-
-  function iniciarJuego(dificil) {
-    if (juegoActivo) return;
-    juegoActivo = true;
-    dificultadJuego = dificil;
-    mensajeJuego.textContent = "Usa barra espaciadora para saltar. El juego comienza.";
-    obstaculoX = canvas.width;
-    dinoY = canvas.height - 30;
-    saltando = false;
-    gravedad = 0;
-    velocidadObstaculo = dificil ? 6 : 3;
-    puntos = 0;
-
-    function dibujar() {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      // Suelo
-      ctx.fillStyle = "#777";
-      ctx.fillRect(0, canvas.height - 10, canvas.width, 10);
-      // Dino
-      ctx.fillStyle = "green";
-      ctx.fillRect(50, dinoY - 20, 20, 20);
-      // Obstáculo
-      ctx.fillStyle = "red";
-      ctx.fillRect(obstaculoX, canvas.height - 30, 20, 20);
-    }
-
-    function actualizar() {
-      // Movimiento obstáculo
-      obstaculoX -= velocidadObstaculo;
-      if (obstaculoX < -20) {
-        obstaculoX = canvas.width;
-        puntos++;
-        if (puntos >= 10) { // Ganas si pasas 10 obstáculos
-          terminarJuego(true);
-        }
-      }
-      // Salto dino
-      if (saltando) {
-        dinoY -= gravedad;
-        gravedad -= 1;
-        if (dinoY >= canvas.height - 30) {
-          dinoY = canvas.height - 30;
-          saltando = false;
-          gravedad = 0;
-        }
-      }
-      // Colisión
-      if (obstaculoX < 70 && obstaculoX > 30 && dinoY >= canvas.height - 30) {
-        terminarJuego(false);
-      }
-
-      dibujar();
-    }
-
-    function saltar() {
-      if (!saltando) {
-        saltando = true;
-        gravedad = 10;
-      }
-    }
-
-    function terminarJuego(ganaste) {
-      clearInterval(juegoInterval);
-      juegoActivo = false;
-      if (ganaste) {
-        let premio = dificil ? 20000 : 1000;
-        dinero += premio;
-        actualizarDinero();
-        mensajeJuego.textContent = ¡Ganaste el mini juego! Premio: $${premio};
-        alert(¡Ganaste! Has recibido $${premio.toLocaleString()});
-      } else {
-        mensajeJuego.textContent = "Perdiste el mini juego, inténtalo de nuevo.";
-        alert("Perdiste el mini juego.");
-      }
-      document.removeEventListener("keydown", listenerSalto);
-    }
-
-    function listenerSalto(e) {
-      if (e.code === "Space") {
-        saltar();
-      }
-    }
-    document.addEventListener("keydown", listenerSalto);
-    juegoInterval = setInterval(actualizar, 30);
-  }
-
-  btnFacil.onclick = () => iniciarJuego(false);
-  btnDificil.onclick = () => iniciarJuego(true);
-
-  mostrarProductos();
-  actualizarDinero();
-  iniciarEdad();
-</script>
-</body>
-</html>
+  // Recompensas
+  if(won) {
+    if(gameSpeed === 6) {
+      updateMoney(1000);
+      saveToAlc
