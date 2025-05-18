@@ -3,98 +3,46 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Tienda con Edad, Código Secreto y Relaciones</title>
+<title>Tienda con Edad, Código y Mini Juego</title>
 <style>
-  body { font-family: Arial, sans-serif; background: #f9f9f9; margin: 20px; }
-  #menu {
-    position: fixed;
-    top: 15px;
-    right: 15px;
-    cursor: pointer;
-    font-size: 24px;
-    user-select: none;
-  }
+  body { font-family: Arial, sans-serif; margin: 20px; background: #f0f0f0; }
+  #menu { position: fixed; top: 10px; right: 15px; font-size: 28px; cursor: pointer; user-select: none; }
   #menuOpciones {
     display: none;
-    position: fixed;
-    top: 50px;
-    right: 15px;
-    background: white;
-    border: 1px solid #ddd;
-    padding: 10px;
-    border-radius: 6px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    position: fixed; top: 50px; right: 15px;
+    background: white; border: 1px solid #ccc; padding: 10px;
+    border-radius: 6px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);
   }
-  #budget { font-size: 24px; margin-bottom: 15px; }
-  #message { color: red; margin-bottom: 20px; min-height: 24px; }
+  #budget, #edad { font-size: 24px; margin-bottom: 15px; }
+  #message { min-height: 24px; margin-bottom: 20px; font-weight: bold; }
   #products { display: flex; flex-wrap: wrap; gap: 15px; }
   .product {
-    background: white;
-    border: 1px solid #ddd;
-    border-radius: 6px;
-    padding: 10px;
-    width: 140px;
-    text-align: center;
+    background: white; border-radius: 8px; padding: 10px;
+    width: 140px; box-shadow: 0 0 5px #ccc; text-align: center;
   }
-  .product img {
-    max-width: 100%;
-    height: 80px;
-    object-fit: contain;
-    margin-bottom: 6px;
-  }
+  .product img { max-width: 100%; height: 80px; object-fit: contain; }
   .product button {
-    margin-top: 10px;
-    padding: 8px 12px;
-    background: #007bff;
-    border: none;
-    color: white;
-    border-radius: 6px;
-    cursor: pointer;
+    margin-top: 10px; padding: 8px 12px;
+    background: #007bff; color: white; border: none; border-radius: 6px; cursor: pointer;
   }
-  #alquiler {
-    margin-top: 25px;
-    padding: 10px;
-    background: #e2ffe2;
-    border-radius: 8px;
+  #alquiler, #miniJuego, #relaciones {
+    background: white; border-radius: 8px; padding: 15px; margin-top: 30px;
+    box-shadow: 0 0 10px #ccc;
   }
-  #miniJuego {
-    margin-top: 30px;
-    padding: 15px;
-    background: #fff8e1;
-    border-radius: 8px;
+  #alquiler input[type=number] {
+    width: 60px; margin-left: 10px;
   }
-  #miniJuego button {
-    margin-top: 10px;
-    padding: 10px 15px;
-    background: #28a745;
-    border: none;
-    color: white;
-    border-radius: 6px;
-    cursor: pointer;
+  #miniJuego button, #alquiler button {
+    margin-top: 10px; padding: 10px 15px; border: none; border-radius: 6px; cursor: pointer;
   }
-  #edad {
-    font-size: 20px;
-    font-weight: bold;
-    margin-bottom: 15px;
-  }
-  #relaciones {
-    margin-top: 30px;
-    padding: 15px;
-    background: #ffe1e1;
-    border-radius: 8px;
-    display: none;
-  }
-  #codigoInput {
-    margin-top: 10px;
-  }
+  #miniJuego button { background: #28a745; color: white; }
+  #alquiler button { background: #17a2b8; color: white; }
+  #relaciones { display: none; }
+  #codigoMensaje { margin-top: 8px; font-weight: bold; }
+  #codigoInput { width: 150px; margin-top: 6px; padding: 5px; }
   #botonCodigo {
-    margin-top: 6px;
-    padding: 6px 10px;
-    background: #6c757d;
-    border: none;
-    color: white;
-    border-radius: 6px;
-    cursor: pointer;
+    background: #6c757d; color: white; border: none; border-radius: 6px; padding: 6px 10px;
+    cursor: pointer; margin-left: 8px;
   }
 </style>
 </head>
@@ -105,169 +53,205 @@
   <label for="codigoInput">Ingresa código secreto:</label><br/>
   <input type="text" id="codigoInput" placeholder="Código secreto" />
   <button id="botonCodigo">Enviar</button>
-  <div id="codigoMensaje" style="margin-top:6px; font-weight:bold;"></div>
+  <div id="codigoMensaje"></div>
 </div>
 
 <div id="edad">Edad: 6 años</div>
 <div id="budget">Presupuesto: $1,000,000</div>
 <div id="message"></div>
 
-<div id="products">
-  <!-- Productos aparecerán aquí -->
-</div>
+<div id="products"></div>
 
 <div id="alquiler">
   <h3>Alquilar casa</h3>
-  <label for="precioAlquiler">Precio alquiler ($1 - $60): </label>
+  <label for="precioAlquiler">Precio alquiler ($1 - $60):</label>
   <input type="number" id="precioAlquiler" min="1" max="60" value="10" />
   <button id="botonAlquilar">Alquilar</button>
-  <div id="estadoAlquiler" style="margin-top:10px; font-weight: bold;"></div>
+  <div id="estadoAlquiler" style="margin-top: 10px; font-weight: bold;">No hay casa alquilada</div>
 </div>
 
 <div id="miniJuego">
   <h3>Mini Juego Dinosaurio (Fácil)</h3>
+  <p>Presiona la barra espaciadora 5 veces para saltar y ganar $1000.</p>
   <button id="botonMiniJuego">Jugar</button>
-  <div id="resultadoMiniJuego" style="margin-top:10px; font-weight: bold;"></div>
+  <div id="resultadoMiniJuego" style="margin-top: 10px; font-weight: bold;"></div>
 </div>
 
 <div id="relaciones">
-  <h3>Área de Relaciones</h3>
-  <p>Puedes acceder a esta área porque tienes 18 años o más.</p>
+  <h3>Área para Relaciones (Desde 18 años)</h3>
+  <p>Aquí podrías poner opciones de relaciones.</p>
 </div>
 
 <script>
-  let presupuesto = 1000000;
-  let edad = 6;
-  const presupuestoDiv = document.getElementById('budget');
-  const messageDiv = document.getElementById('message');
+  const presupuestoElem = document.getElementById('budget');
+  const edadElem = document.getElementById('edad');
+  const messageElem = document.getElementById('message');
   const productsDiv = document.getElementById('products');
   const botonAlquilar = document.getElementById('botonAlquilar');
-  const estadoAlquilerDiv = document.getElementById('estadoAlquiler');
   const precioAlquilerInput = document.getElementById('precioAlquiler');
+  const estadoAlquiler = document.getElementById('estadoAlquiler');
   const botonMiniJuego = document.getElementById('botonMiniJuego');
   const resultadoMiniJuego = document.getElementById('resultadoMiniJuego');
-  const edadDiv = document.getElementById('edad');
   const relacionesDiv = document.getElementById('relaciones');
 
   const menu = document.getElementById('menu');
   const menuOpciones = document.getElementById('menuOpciones');
-  const codigoInput = document.getElementById('codigoInput');
   const botonCodigo = document.getElementById('botonCodigo');
+  const codigoInput = document.getElementById('codigoInput');
   const codigoMensaje = document.getElementById('codigoMensaje');
 
-  // Productos con imagenes (puedes poner URLs reales)
+  let presupuesto = 1000000;
+  let edad = 6;
+  let alquilerActivo = false;
+  let dinosaurioSaltos = 0;
+  let jugando = false;
+  let alcanciaComprada = false;
+  let dineroAhorrado = 0;
+
+  // Productos (simplificado)
   const productos = [
-    { nombre: 'Teléfono A', precio: 200000, img: 'https://via.placeholder.com/140x80?text=Teléfono+A' },
-    { nombre: 'Consola B', precio: 150000, img: 'https://via.placeholder.com/140x80?text=Consola+B' },
-    { nombre: 'Juego FIFA', precio: 30000, img: 'https://via.placeholder.com/140x80?text=Juego+FIFA' },
-    { nombre: 'Bicicleta D', precio: 45000, img: 'https://via.placeholder.com/140x80?text=Bicicleta+D' },
-    { nombre: 'Carro E', precio: 500000, img: 'https://via.placeholder.com/140x80?text=Carro+E' }
+    { id: 1, nombre: 'iPhone 14', precio: 999, img: 'https://upload.wikimedia.org/wikipedia/commons/thumb/f/f0/IPhone_14_Pro_Max_Pacific_Blue.svg/512px-IPhone_14_Pro_Max_Pacific_Blue.svg.png' },
+    { id: 2, nombre: 'PlayStation 5', precio: 499, img: 'https://upload.wikimedia.org/wikipedia/commons/0/05/PS5_Console.svg' },
+    { id: 3, nombre: 'Xbox Series X', precio: 499, img: 'https://upload.wikimedia.org/wikipedia/commons/4/43/Xbox-Series-X-S.svg' },
+    { id: 4, nombre: 'FIFA 25 (PS5)', precio: 70, img: 'https://upload.wikimedia.org/wikipedia/en/5/5e/FIFA_22_cover_art.jpg' },
+    { id: 5, nombre: 'Bicicleta MTB', precio: 350, img: 'https://upload.wikimedia.org/wikipedia/commons/7/74/Mountain_Bike_Icon.svg' },
+    { id: 6, nombre: 'Carro usado', precio: 5000, img: 'https://upload.wikimedia.org/wikipedia/commons/3/3a/Toyota_Corolla_2019_IMG_0291.jpg' },
+    { id: 7, nombre: 'Alcancía', precio: 2000, img: 'https://upload.wikimedia.org/wikipedia/commons/6/6a/Piggy_Bank_icon.svg' }
   ];
 
+  // Mostrar productos
   function mostrarProductos() {
     productsDiv.innerHTML = '';
-    productos.forEach((prod, i) => {
-      const prodDiv = document.createElement('div');
-      prodDiv.className = 'product';
-      prodDiv.innerHTML = `
+    productos.forEach(prod => {
+      const div = document.createElement('div');
+      div.className = 'product';
+      div.innerHTML = `
         <img src="${prod.img}" alt="${prod.nombre}" />
-        <strong>${prod.nombre}</strong><br />
-        Precio: $${prod.precio.toLocaleString()}<br />
-        <button id="comprarBtn${i}">Comprar</button>
+        <div>${prod.nombre}</div>
+        <div>Precio: $${prod.precio.toLocaleString()}</div>
+        <button onclick="comprarProducto(${prod.id})">Comprar</button>
       `;
-      productsDiv.appendChild(prodDiv);
-
-      document.getElementById(comprarBtn${i}).onclick = () => {
-        if (presupuesto >= prod.precio) {
-          presupuesto -= prod.precio;
-          actualizarPresupuesto();
-          messageDiv.style.color = 'green';
-          messageDiv.textContent = Compraste: ${prod.nombre} por $${prod.precio.toLocaleString()};
-        } else {
-          messageDiv.style.color = 'red';
-          messageDiv.textContent = 'No tienes dinero suficiente para esta compra.';
-        }
-      };
+      productsDiv.appendChild(div);
     });
   }
 
-  function actualizarPresupuesto() {
-    presupuestoDiv.textContent = Presupuesto: $${presupuesto.toLocaleString()};
+  // Comprar producto
+  function comprarProducto(id) {
+    const prod = productos.find(p => p.id === id);
+    if (!prod) return;
+
+    if (presupuesto >= prod.precio) {
+      presupuesto -= prod.precio;
+      presupuestoElem.textContent = Presupuesto: $${presupuesto.toLocaleString()};
+
+      if (prod.nombre === 'Alcancía') {
+        alcanciaComprada = true;
+        messageElem.textContent = 'Compraste una alcancía. Ahorrarás dinero aquí.';
+      } else {
+        messageElem.textContent = Compraste ${prod.nombre} por $${prod.precio.toLocaleString()}.;
+      }
+    } else {
+      messageElem.textContent = 'No tienes suficiente dinero para comprar esto.';
+    }
   }
 
-  // Alquiler
-  let alquilado = false;
+  // Alquiler casa
   botonAlquilar.onclick = () => {
-    const precio = Number(precioAlquilerInput.value);
-    if (alquilado) {
-      messageDiv.style.color = 'red';
-      messageDiv.textContent = 'Ya tienes una casa alquilada.';
-      return;
-    }
-    if (precio < 1 || precio > 60 || isNaN(precio)) {
-      messageDiv.style.color = 'red';
-      messageDiv.textContent = 'Precio de alquiler debe estar entre 1 y 60.';
+    const precio = parseInt(precioAlquilerInput.value);
+    if (isNaN(precio) || precio < 1 || precio > 60) {
+      estadoAlquiler.textContent = 'El precio debe ser entre $1 y $60.';
       return;
     }
     if (presupuesto >= precio) {
       presupuesto -= precio;
-      actualizarPresupuesto();
-      alquilado = true;
-      estadoAlquilerDiv.textContent = Casa alquilada por $${precio};
-      messageDiv.style.color = 'green';
-      messageDiv.textContent = '¡Alquiler realizado con éxito!';
-      setTimeout(() => {
-        alquilado = false;
-        estadoAlquilerDiv.textContent = 'No hay casa alquilada';
-        messageDiv.style.color = 'blue';
-        messageDiv.textContent = 'El alquiler terminó, puedes alquilar otra vez.';
-      }, 10000);
+      presupuestoElem.textContent = Presupuesto: $${presupuesto.toLocaleString()};
+      alquilerActivo = true;
+      estadoAlquiler.textContent = Casa alquilada por $${precio}.;
+      messageElem.textContent = 'Disfruta tu casa alquilada.';
     } else {
-      messageDiv.style.color = 'red';
-      messageDiv.textContent = 'No tienes dinero suficiente para alquilar.';
+      estadoAlquiler.textContent = 'No tienes suficiente dinero para alquilar.';
     }
   };
 
-  // Mini juego dinosaurio fácil (simulación)
+  // Mini juego dinosaurio fácil
   botonMiniJuego.onclick = () => {
-    resultadoMiniJuego.textContent = 'Jugando... presiona Espacio para saltar';
-    messageDiv.textContent = '';
-    let saltos = 0;
-    let jugando = true;
+    if (jugando) return;
+    jugando = true;
+    dinosaurioSaltos = 0;
+    resultadoMiniJuego.textContent = 'Juego iniciado: presiona la barra espaciadora 5 veces para saltar.';
+  };
 
-    function keyHandler(e) {
-      if (!jugando) return;
-      if (e.code === 'Space') {
-        saltos++;
-        resultadoMiniJuego.textContent = Saltos: ${saltos};
-        if (saltos >= 5) {
-          jugando = false;
-          document.removeEventListener('keydown', keyHandler);
-          presupuesto += 1000;
-          actualizarPresupuesto();
-          resultadoMiniJuego.textContent = '¡Ganaste $1,000! Mini juego terminado.';
-          messageDiv.style.color = 'green';
-          messageDiv.textContent = '¡Felicidades, ganaste en el mini juego!';
+  // Detectar barra espaciadora para mini juego
+  window.addEventListener('keydown', e => {
+    if (!jugando) return;
+    if (e.code === 'Space') {
+      dinosaurioSaltos++;
+      resultadoMiniJuego.textContent = Saltos: ${dinosaurioSaltos}/5;
+
+      if (dinosaurioSaltos >= 5) {
+        jugando = false;
+        resultadoMiniJuego.textContent = '¡Ganaste $1000!';
+        presupuesto += 1000;
+        presupuestoElem.textContent = Presupuesto: $${presupuesto.toLocaleString()};
+        if (alcanciaComprada) {
+          dineroAhorrado += 1000;
+          messageElem.textContent = Dinero ahorrado en alcancía: $${dineroAhorrado.toLocaleString()};
+          if (dineroAhorrado >= 2000000) {
+            presupuesto += dineroAhorrado;
+            dineroAhorrado = 0;
+            messageElem.textContent = '¡Alcancía liberada! Dinero ahorrado añadido al presupuesto.';
+            presupuestoElem.textContent = Presupuesto: $${presupuesto.toLocaleString()};
+          }
         }
       }
     }
+  });
 
-    document.addEventListener('keydown', keyHandler);
-  };
-
-  // Contador de edad: sube 1 año cada 2 minutos
-  function avanzarEdad() {
+  // Edad que aumenta 1 año cada 2 minutos
+  setInterval(() => {
+    if (edad >= 90) return; // Máximo 90 años
     edad++;
-    edadDiv.textContent = Edad: ${edad} años;
+    edadElem.textContent = Edad: ${edad} años;
+
+    // Mostrar área relaciones solo desde 18 años
     if (edad >= 18) {
       relacionesDiv.style.display = 'block';
+    } else {
+      relacionesDiv.style.display = 'none';
     }
-  }
-  setInterval(avanzarEdad, 120000); // 120000 ms = 2 minutos
 
-  // Menú código secreto
+    // Condición para perder o ganar
+    if (edad === 20 && presupuesto < 5000000) {
+      alert('Intento fallido: No tienes $5 millones al cumplir 20 años. Reiniciando juego.');
+      reiniciarJuego();
+    }
+
+    if (edad > 25 && presupuesto >= 5000000) {
+      alert('¡Felicidades! Recibiste un regalo de $20 millones por superar los 25 años con éxito.');
+      presupuesto += 20000000;
+      presupuestoElem.textContent = Presupuesto: $${presupuesto.toLocaleString()};
+    }
+  }, 120000); // 120000 ms = 2 minutos
+
+  // Reiniciar juego
+  function reiniciarJuego() {
+    presupuesto = 1000000;
+    edad = 6;
+    alquilerActivo = false;
+    dinosaurioSaltos = 0;
+    jugando = false;
+    alcanciaComprada = false;
+    dineroAhorrado = 0;
+    presupuestoElem.textContent = Presupuesto: $${presupuesto.toLocaleString()};
+    edadElem.textContent = Edad: ${edad} años;
+    estadoAlquiler.textContent = 'No hay casa alquilada';
+    resultadoMiniJuego.textContent = '';
+    messageElem.textContent = 'Juego reiniciado.';
+  }
+
+  // Menú código oculto
   menu.onclick = () => {
-    if (menuOpciones.style.display === 'none' || menuOpciones.style.display === '') {
+    if (menuOpciones.style.display === 'none') {
       menuOpciones.style.display = 'block';
     } else {
       menuOpciones.style.display = 'none';
@@ -278,24 +262,21 @@
 
   botonCodigo.onclick = () => {
     const codigo = codigoInput.value.trim();
-    if (codigo.toLowerCase() === 'fc25') {
+    if (codigo === 'Fc25') {
       presupuesto += 5000000;
-      actualizarPresupuesto();
-      codigoMensaje.style.color = 'green';
-      codigoMensaje.textContent = '¡Código válido! Te dieron $5,000,000';
-      messageDiv.style.color = 'green';
-      messageDiv.textContent = '¡Has recibido $5,000,000 con el código secreto!';
+      presupuestoElem.textContent = Presupuesto: $${presupuesto.toLocaleString()};
+      codigoMensaje.textContent = 'Código correcto: $5 millones añadidos.';
+      codigoInput.value = '';
+      menuOpciones.style.display = 'none';
     } else {
-      codigoMensaje.style.color = 'red';
       codigoMensaje.textContent = 'Código incorrecto.';
     }
   };
 
-  // Inicializar
-  actualizarPresupuesto();
-  mostrarProductos();
-  estadoAlquilerDiv.textContent = 'No hay casa alquilada';
+  // Exponer función para botón comprar
+  window.comprarProducto = comprarProducto;
 
+  mostrarProductos();
 </script>
 
 </body>
