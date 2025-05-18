@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Tienda Ficticia Millonaria</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f0f0f0;
+      margin: 0;
+      padding: 0;
+    }
+    header {
+      background: #d70000;
+      color: white;
+      text-align: center;
+      padding: 20px;
+      position: relative;
+    }
+    .menu {
+      position: absolute;
+      left: 10px;
+      top: 10px;
+      font-size: 30px;
+      cursor: pointer;
+      user-select: none;
+    }
+    #menuOpciones {
+      display: none;
+      position: absolute;
+      background: white;
+      border: 1px solid #ccc;
+      padding: 10px;
+      z-index: 10;
+      left: 10px;
+      top: 50px;
+    }
+    #presupuesto, #edad {
+      background: #fff8e1;
+      color: #333;
+      font-size: 18px;
+      padding: 10px;
+      text-align: center;
+    }
+    .tarjeta {
+      background: #1e88e5;
+      color: white;
+      padding: 15px;
+      margin: 10px;
+      border-radius: 10px;
+      text-align: center;
+      font-size: 18px;
+    }
+    .tienda {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 20px;
+      padding: 20px;
+    }
+    .producto {
+      background: white;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      padding: 10px;
+      text-align: center;
+      box-shadow: 0 0 5px rgba(0,0,0,0.1);
+    }
+    .producto img {
+      width: 100px;
+      height: 100px;
+      object-fit: contain;
+    }
+    .producto h4 {
+      margin: 10px 0 5px;
+    }
+    .producto button {
+      background: #4caf50;
+      color: white;
+      border: none;
+      padding: 8px 12px;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    .juegos {
+      padding: 20px;
+      text-align: center;
+    }
+    canvas {
+      background: #fff;
+      display: block;
+      margin: 10px auto;
+      border: 1px solid #ccc;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="menu" onclick="mostrarMenu()">☰</div>
+    <h1>Tienda Ficticia Millonaria</h1>
+    <div id="menuOpciones">
+      <label for="codigo">Código secreto:</label>
+      <input type="text" id="codigo" />
+      <button onclick="validarCodigo()">Canjear</button>
+    </div>
+  </header>
+  <div class="tarjeta">Dinero actual: $<span id="dinero">1000000</span></div>
+  <div id="edad">Edad: <span id="anios">6</span> años</div>
+  <section class="tienda" id="productos"></section>
+  <div class="juegos">
+    <button onclick="iniciarJuegoFacil()">Mini Juego Fácil (+$1000)</button>
+    <button onclick="iniciarJuegoDificil()">Mini Juego Difícil (+$20000)</button>
+    <p id="mensajeJuego" style="font-weight:bold;"></p>
+    <canvas id="juego" width="400" height="150"></canvas>
+  </div>
+
+<script>
+  let dinero = 1000000;
+  let edad = 6;
+  let ahorroAlcancia = 0;
+  const dineroElemento = document.getElementById("dinero");
+  const edadElemento = document.getElementById("anios");
+  const productos = [];
+  const contenedor = document.getElementById("productos");
+  const mensajeJuego = document.getElementById("mensajeJuego");
+  let juegoActivo = false;
+
+  function mostrarMenu() {
+    const menu = document.getElementById("menuOpciones");
+    menu.style.display = menu.style.display === "block" ? "none" : "block";
+  }
+
+  function validarCodigo() {
+    const codigo = document.getElementById("codigo").value.trim();
+    if (codigo === "Fc25") {
+      dinero += 5000000;
+      actualizarDinero();
+      alert("¡Código aceptado! Se han añadido $5,000,000");
+    } else {
+      alert("Código incorrecto");
+    }
+  }
+
+  function actualizarDinero() {
+    dineroElemento.textContent = dinero.toLocaleString();
+  }
+  function actualizarEdad() {
+    edadElemento.textContent = edad;
+  }
+
+  // Contador de edad
+  function iniciarContadorEdad() {
+    const intervalo = setInterval(() => {
+      edad++;
+      actualizarEdad();
+
+      if (edad === 20 && dinero < 5000000) {
+        alert("No alcanzaste los $5 millones a los 20 años. Intenta de nuevo.");
+        location.reload();
+      }
+      if (edad === 25) {
+        dinero += 20000000;
+        actualizarDinero();
+        alert("¡Felicidades! Recibiste $20 millones por llegar a los 25 años");
+      }
+      if (edad > 90) {
+        alert("Has llegado a los 90 años y tu vida ha terminado. Reiniciando el juego.");
+        location.reload();
+      }
+    }, 120000); // 2 minutos por año
+  }
+  iniciarContadorEdad();
+
+  // Productos: 160 artículos variados con precios reales y fotos (links públicos)
+  // 30 teléfonos, 30 consolas, 30 juegos, 30 casas, 20 alquileres, 19 bicicletas, 1 alcancía
+  for (let i = 0; i < 160; i++) {
+    if (i < 30) productos.push({nombre:"iPhone 14", precio:999, imagen:"https://i.imgur.com/xZgV9sH.png"});
+    else if (i < 60) productos.push({nombre:"PS5", precio:499, imagen:"https://i.imgur.com/63i6v81.png"});
+    else if (i < 90) productos.push({nombre:"FIFA 25", precio:69, imagen:"https://i.imgur.com/xl3sfZs.png"});
+    else if (i < 120) productos.push({nombre:"Casa Moderna", precio:800000, imagen:"https://i.imgur.com/RUd1YQ3.png"});
+    else if (i < 140) productos.push({nombre:"Alquiler Cuarto", precio:55, imagen:"https://i.imgur.com/zVdZIrT.png"});
+    else if (i < 159) productos.push({nombre:"Bicicleta", precio:200, imagen:"https://i.imgur.com/kl5gDCM.png"});
+    else productos.push({nombre:"Alcancía mágica", precio:2000, imagen:"https://i.imgur.com/zxavKX0.png"});
+  }
+
+  // Renderizar productos en la tienda
+  productos.forEach((p, index) => {
+    const div = document.createElement("div");
+    div.className = "producto";
+    div.innerHTML = `
+      <img src="${p.imagen}" alt="${p.nombre}" />
+      <h4>${p.nombre}</h4>
+      <p>$${p.precio.toLocaleString()}</p>
+      <button onclick="comprar(${index})">Comprar</button>
+    `;
+    contenedor.appendChild(div);
+  });
+
+  function comprar(index) {
+    if(juegoActivo){
+      alert("No puedes comprar mientras juegas.");
+      return;
+    }
+    const prod = productos[index];
+    if (dinero >= prod.precio) {
+      dinero -= prod.precio;
+      actualizarDinero();
+      if (prod.nombre.includes("Alcancía")) {
+        ahorroAlcancia += prod.precio;
+        if (ahorroAlcancia >= 2000000) {
+          dinero += ahorroAlcancia;
+          alert("¡Alcancía completa! Se te devuelve: $" + ahorroAlcancia.toLocaleString());
+          ahorroAlcancia = 0;
+          actualizarDinero();
+        }
+      }
+      if(prod.nombre.includes("Alquiler") && prod.precio > 60){
+        alert("El precio del alquiler no puede pasar de $60.");
+        dinero += prod.precio;
+        actualizarDinero();
+        return;
+      }
+      alert(Compraste ${prod.nombre} por $${prod.precio.toLocaleString()});
+    } else {
+      alert("No tienes suficiente dinero.");
+    }
+  }
+
+  // Juego del dinosaurio básico
+  let canvas = document.getElementById("juego");
+  let ctx = canvas.getContext("2d");
+  let dino, obstaculo, gravedad, velocidad, juegoTerminado, saltando, vy;
+  let dificultadJuego;
+
+  function iniciarJuegoFacil() {
+    if(juegoActivo) return;
+    dificultadJuego = false;
+    mensajeJuego.textContent = "Mini juego fácil. Usa SPACE para saltar. Gana +$1000 al completar.";
+    iniciarJuego();
+  }
+  function iniciarJuegoDificil() {
+    if(juegoActivo) return;
+    dificultadJuego = true;
+    mensajeJuego.textContent = "Mini juego difícil. Usa SPACE para saltar. Gana +$20,000 al completar.";
+    iniciarJuego();
+  }
+
+  function iniciarJuego() {
+    juegoActivo = true;
+    dino = {x:50, y:100, vy:0, saltando:false};
+    obstaculo = {x:400, y:100};
+    gravedad = 0.6;
+    velocidad = dificultadJuego ? 5 : 3;
+    juegoTerminado = false;
+    saltando = false;
+    vy = 0;
+
+    document.onkeydown = (e) => {
+      if(e.code === "Space" || e.key === " "){
+        if(!dino.saltando){
+          dino.vy = -12;
+          dino.saltando = true;
+        }
+      }
+    };
+
+    function loop() {
+      if(juegoTerminado) return;
+
+      ctx.clearRect(0, 0, 400, 150);
+
+      // Dino movimiento y gravedad
+      dino.y += dino.vy;
+      dino.vy += gravedad;
+      if(dino.y > 100){
+        dino.y = 100;
+        dino.vy = 0;
+        dino.saltando = false;
+      }
+
+      // Dibuja dinosaurio (rectángulo verde)
+      ctx.fillStyle = "#4CAF50";
+      ctx.fillRect(dino.x, dino.y, 40, 40);
+
+      // Mueve obstáculo
+      obstaculo.x -= velocidad;
+      if(obstaculo.x < -40){
+        obstaculo.x = 400; // Reinicia obstáculo a la derecha
+      }
+
+      // Dibuja obstáculo (rectángulo rojo)
+      ctx.fillStyle = "#f44336";
+      ctx.fillRect(obstaculo.x, obstaculo.y + 20, 20, 20);
+
+      // Colisión
+      if(obstaculo.x < dino.x + 40 &&
+         obstaculo.x + 20 > dino.x &&
+         dino.y + 40 > obstaculo.y + 20 &&
+         dino.y < obstaculo.y + 40){
+        // Colisión detectada - reinicia juego
+        juegoTerminado = true;
+        mensajeJuego.textContent = "Perdiste. Intenta de nuevo.";
+        juegoActivo = false;
+        return;
+      }
+
+      // Condición para ganar: sobrevivir 60 segundos
+      tiempoJuego += 16.6;
+      if(tiempoJuego >= 60000){
+        juegoTerminado = true;
+        let premio = dificultadJuego ? 20000 : 1000;
+        dinero += premio;
+        actualizarDinero();
+        mensajeJuego.textContent = ¡Ganaste! Recibiste $${premio.toLocaleString()};
+        juegoActivo = false;
+        return;
+      }
+      requestAnimationFrame(loop);
+    }
+    let tiempoJuego = 0;
+    loop();
+  }
+</script>
+</body>
+</html>
